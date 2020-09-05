@@ -1,4 +1,4 @@
-package spring.study.architectureddd;
+package study.spring.ddd;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;

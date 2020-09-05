@@ -1,4 +1,4 @@
-package spring.study.architectureddd;
+package study.spring.ddd;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
