@@ -1,16 +1,47 @@
+buildscript {
+    ext {
+        springBootVersion = '2.3.3.RELEASE'
+        querydslPluginVersion = '1.0.10'
+    }
+    repositories {
+        mavenCentral()
+        maven { url 'https://plugins.gradle.org/m2/' }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.3.3.RELEASE")
+        classpath("gradle.plugin.com.ewerk.gradle.plugins:querydsl-plugin:1.0.10")
+    }
+}
+
 plugins {
     id 'org.springframework.boot' version '2.3.3.RELEASE'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'org.asciidoctor.convert' version '1.5.8'
     id 'java'
     id 'war'
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
-group = 'spring.study'
+bootWar {
+    archiveBaseName = 'architecture'
+    archiveFileName = 'ddd.war'
+    archiveVersion = "0.0.0"
+    // REST Docs
+    dependsOn asciidoctor
+    from ("${asciidoctor.outputDir}/html5") {
+        into 'static/docs'
+    }
+}
+
+group = 'study.spring'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
     compileOnly {
         extendsFrom annotationProcessor
     }
@@ -26,27 +57,51 @@ ext {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.springframework.boot:spring-boot-starter-data-rest'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-data-rest' // RestFul API
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc' // JDBC MySQL
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // JPA
+    implementation 'org.springframework.boot:spring-boot-starter-security' // Security
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf' // Template Engine
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final' // Hibernate
+    implementation 'org.hibernate.validator:hibernate-validator-annotation-processor:6.1.5.Final' // Hibernate
+    implementation 'javax.el:javax.el-api:3.0.0' // Hibernate
+    implementation 'org.glassfish.web:javax.el:2.2.6' // Hibernate
+    implementation 'com.vladmihalcea:hibernate-types-52:2.9.12' // Hibernate
+    implementation 'io.jsonwebtoken:jjwt:0.9.1' // JWT
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws' // AWS
+    implementation 'com.google.firebase:firebase-admin:6.10.0' // FCM
+    implementation 'com.querydsl:querydsl-jpa' // QueryDSL
+    implementation 'com.querydsl:querydsl-apt' // QueryDSL
+    implementation 'org.apache.tomcat.embed:tomcat-embed-jasper' // JSP
+    implementation 'javax.servlet:jstl' // JSP
+    implementation 'org.projectlombok:lombok' // Lombok
 
-    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'com.querydsl:querydsl-apt' // QueryDSL
+    annotationProcessor 'org.projectlombok:lombok' // Lombok
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'mysql:mysql-connector-java'
-    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'mysql:mysql-connector-java' // MySQL
+    runtimeOnly 'com.h2database:h2' // H2 DB
+    compileOnly 'org.projectlombok:lombok' // Lombok
 
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
-    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'junit:junit'
     testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc' // Rest Docs
+
+    asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor' // Rest Docs
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.cloud:spring-cloud-aws:2.2.1.RELEASE'
+    }
 }
 
 test {
@@ -54,7 +109,42 @@ test {
     useJUnitPlatform()
 }
 
+// REST Docs
 asciidoctor {
     inputs.dir snippetsDir
     dependsOn test
 }
+
+//-------------------------------------
+// QueryDSL
+//-------------------------------------
+apply plugin: 'com.ewerk.gradle.plugins.querydsl'
+def querydslSrcDir = "src/main/generated"
+
+querydsl {
+    library = "com.querydsl:querydsl-apt"
+    jpa = true
+    querydslSourcesDir = "$buildDir/generated/sources/annotationProcessor/java/main"
+}
+
+sourceSets {
+    main.java.srcDirs = ['src/main/java', querydslSrcDir]
+}
+
+configurations {
+    querydsl.extendsFrom compileClasspath
+}
+
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
+}
+
+clean {
+    delete file(querydslSrcDir)
+}
+
+tasks.withType(JavaCompile) {
+    options.annotationProcessorGeneratedSourcesDirectory = file(querydslSrcDir)
+}
+
+//---------------------------------------------------------------

@@ -33,6 +33,15 @@ out/
 ### VS Code ###
 .vscode/
 
-### DEVELOP ###
-application.properties
-application.yml
+########################################
+### DEVELOPMENT
+########################################
+
+# `profiles`를 통해 Config 관리
+#application.properties
+#application.yml
+application-dev.yml
+application-prod.yml
+
+# `QueryDSL` 사용 시 생성되는 폴더
+generated
