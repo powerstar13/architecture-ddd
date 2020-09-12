@@ -41,4 +41,7 @@
 
 ## Entity 설계
 
-- 작업중
+1. Table > Column DataType 및 ID 기초 설계
+2. Realationships > OneToMany, ManyToOne 양방향 관계 연결 > FetchType LAZY 전략 사용
+3. Tostring > exclude 를 통해 기본적으로 제외하도록 등록
+4. Index Column 연결
