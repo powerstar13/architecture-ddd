@@ -1,4 +1,4 @@
-package study.spring.ddd.common.config;
+package study.spring.ddd._common.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;

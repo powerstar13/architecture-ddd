@@ -1,12 +1,12 @@
-package study.spring.ddd.init.controller;
+package study.spring.ddd._common.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-public class HomeController
-{
+public class HomeController {
+
     /**
      * `JSP`를 사용하여 View 출력
      */
@@ -24,4 +24,5 @@ public class HomeController
     {
         return new ModelAndView("thymeleaf/welcome");
     }
+
 }

@@ -1,10 +1,10 @@
-package study.spring.ddd.common.filter;
+package study.spring.ddd._common.filter;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-import study.spring.ddd.common.config.JwtTokenProvider;
+import study.spring.ddd._common.config.JwtTokenProvider;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
