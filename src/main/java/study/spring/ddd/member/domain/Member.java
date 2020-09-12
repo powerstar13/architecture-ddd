@@ -1,14 +1,9 @@
 package study.spring.ddd.member.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Builder
@@ -16,6 +11,7 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @Data
 @Table(name = "member")
+@ToString(exclude = "memberAuthorities")
 public class Member {
 
     @Id
@@ -28,4 +24,9 @@ public class Member {
     private String password;
 
     private Boolean blocked; // TINIYINT(nullable = true) --> `Boolean`으로 처리
+
+    //---------------------------------------------------------------------
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
+    private List<MemberAuthorities> memberAuthorities;
 }

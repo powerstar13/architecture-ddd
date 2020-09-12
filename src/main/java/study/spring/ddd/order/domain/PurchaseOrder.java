@@ -1,12 +1,10 @@
 package study.spring.ddd.order.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Builder
@@ -14,6 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Data
 @Table(name = "purchase_order")
+@ToString(exclude = "orderLine")
 public class PurchaseOrder {
 
     @Id
@@ -53,4 +52,9 @@ public class PurchaseOrder {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date orderDate;
+
+    //---------------------------------------------------------------------
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "purchaseOrder")
+    private List<OrderLine> orderLine;
 }

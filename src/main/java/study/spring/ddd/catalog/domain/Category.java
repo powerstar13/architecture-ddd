@@ -1,12 +1,9 @@
 package study.spring.ddd.catalog.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
-import java.math.BigInteger;
+import java.util.List;
 
 @Entity
 @Builder
@@ -14,6 +11,7 @@ import java.math.BigInteger;
 @AllArgsConstructor
 @Data
 @Table(name = "category")
+@ToString(exclude = "productCategory")
 public class Category {
 
     @Id
@@ -23,4 +21,8 @@ public class Category {
     @Column(length = 100)
     private String name;
 
+    //---------------------------------------------------------------------
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
+    private List<ProductCategory> productCategory;
 }

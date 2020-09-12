@@ -1,9 +1,7 @@
 package study.spring.ddd.order.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import study.spring.ddd.catalog.domain.Product;
 
 import javax.persistence.*;
 
@@ -13,20 +11,24 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Data
 @Table(name = "order_line", indexes = {
-    @Index(columnList = "orderNumber"),
-    @Index(columnList = "lineIdx")
+    @Index(columnList = "order_number"),
+    @Index(columnList = "lineIdx"),
+    @Index(columnList = "product_id")
 })
+@ToString(exclude = {"purchaseOrder", "product"})
 public class OrderLine {
 
-    @Id
-    @Column(length = 50, nullable = false)
-    private String orderNumber;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_number", nullable = false, updatable = false)
+    private PurchaseOrder purchaseOrder;
 
+    @Id
     @Column(nullable = false)
     private int lineIdx;
 
-    @Column(length = 50, nullable = false)
-    private String productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false, updatable = false)
+    private Product product;
 
     private Integer price;
 

@@ -1,14 +1,8 @@
 package study.spring.ddd.member.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -17,11 +11,12 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Data
 @Table(name = "member_authorities")
+@ToString(exclude = "member")
 public class MemberAuthorities implements Serializable {
 
-    @Id
-    @Column(length = 50, nullable = false)
-    private String memberId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false, updatable = false)
+    private Member member;
 
     @Id
     @Column(length = 50, nullable = false)

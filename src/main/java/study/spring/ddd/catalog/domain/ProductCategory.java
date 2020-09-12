@@ -1,14 +1,8 @@
 package study.spring.ddd.catalog.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -16,14 +10,19 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Table(name = "product_category")
+@Table(name = "product_category", indexes = {
+    @Index(columnList = "category_id")
+})
+@ToString(exclude = {"product", "category"})
 public class ProductCategory implements Serializable {
 
     @Id
-    @Column(length = 50, nullable = false)
-    private String productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false, updatable = false)
+    private Product product;
 
     @Id
-    @Column(nullable = false)
-    private long categoryId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false, updatable = false)
+    private Category category;
 }
